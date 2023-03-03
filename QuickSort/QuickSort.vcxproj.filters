@@ -21,5 +21,11 @@
     <ClCompile Include="快选.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="归并.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="逆序对.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -129,6 +129,8 @@
   <ItemGroup>
     <ClCompile Include="快排.cpp" />
     <ClCompile Include="快选.cpp" />
+    <ClCompile Include="归并.cpp" />
+    <ClCompile Include="逆序对.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
