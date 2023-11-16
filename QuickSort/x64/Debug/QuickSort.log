@@ -1,3 +1,0 @@
-﻿  快选.cpp
-D:\tool\VS\project\C++algroithm\QuickSort\快选.cpp(3,15): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-  QuickSort.vcxproj -> D:\tool\VS\project\C++algroithm\QuickSort\x64\Debug\QuickSort.exe
