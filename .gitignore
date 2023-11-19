@@ -111,6 +111,8 @@ ipch/
 *.cachefile
 *.VC.db
 *.VC.VC.opendb
+# Ignore .exe files in nested folders
+**/*.exe
 
 # Visual Studio profiler
 *.psess
