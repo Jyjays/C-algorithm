@@ -21,7 +21,7 @@ int main(){
 		for(int j=m;j>=weight[i];j--){
 			f[j] = max(f[j],f[j-weight[i]]+value[i]); 
 		}
-}
+	}
 	cout<<f[m];
 	return 0; 
 } 
