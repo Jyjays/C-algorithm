@@ -30,49 +30,25 @@ bool is_ans(unordered_map<int, int> &m)
     }
     return true;
 }
-void pr(unordered_map<int, int> &m)
-{
-    
-    for (auto &kv : m)
-    {
-        cout<<kv.first<<" "<<kv.second<<" ";
-      }
- 
-}
 
 void dfs(int u, unordered_map<int, int> &m, int &count)
 {
-    // if (h[u] == -1)
-    // {
-    //     count++;
-    //     m[c[u]]++;
-    //     cout<<u<<" ";
-    //     return;
-    // }
+    if (h[u] == -1)
+    {
+        count++;
+        m[c[u]]++;
+        cout<<u<<" "<< m[c[u]]<<endl;
+        return;
+    }
     for (int i = h[u]; i != -1; i = ne[i])
     {
-
         int j = e[i];
-        dfs(j, m, count);
+        dfs(e[j], m, count);
         m[c[j]]++;
-        
-        //cout<<j<<" "<<"color:"<<c[j]<<endl;
-        //cout<<j<<" "<< m[c[j]]<<endl;
-        if (is_ans(m)){
+        cout<<j<<" "<< m[c[j]]<<endl;
+        if (is_ans(m))
             count++;
-            //cout<<j<<" ";
-        }
-            
     }
-    // if(u==1){
-    //    m[c[u]]++;
-    //    cout<<"color:"<<c[u]<<" ";
-    //    if (is_ans(m)){
-    //       count++;
-    //       //cout<<u<<" ";
-    //    }
-            
-    // }
 }
 
 int main()
@@ -82,15 +58,12 @@ int main()
     memset(h, -1, sizeof h);
     for (int i = 1; i <= n; i++)
     {
-        
         cin >> color >> par;
-        
         add(par, i, color);
         // add2par(i,par);
     }
     int res = 0;
-    dfs(0, c_num, res);
+    dfs(1, c_num, res);
     cout << res << endl;
-
     return 0;
 }
