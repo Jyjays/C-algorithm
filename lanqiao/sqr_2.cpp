@@ -16,7 +16,7 @@ public:
     {
         flag = true;
         len = 0;
-        *num = {0};
+        memset(num, 0, sizeof(num)); // 使用memset初始化数组为0
     }
     bool operator<(const BigNum &num2) const
     {
@@ -86,16 +86,62 @@ public:
             int carry = 0;
             for (int j = 0; j < len; j++)
             {
-                int temp = num[i] * now + temp;
-                res.num[res.len++] = temp % 10;
+                int temp = num[j] * now + carry; // 修正变量名
+                bn[i].num[bn[i].len++] = temp%10; 
                 carry = temp / 10;
             }
             while (carry)
             {
-                res.num[res.len++] = carry;
+                bn[i].num[bn[i].len++] = carry%10; // 修正写入的值
+                carry /= 10;
             }
         }
-
+        for(int i=0;i<120;i++) res = res + bn[i];
+        return res;
+    }
+    BigNum operator*(int b){
+        BigNum res;
+        int carry = 0;
+        for(int i=0;i<len;i++){
+            int temp = num[i]*b+carry;
+            res.num[res.len++] = temp%10;
+            carry = temp/10;
+        }
+        while(carry){
+            res.num[res.len++] = carry%10;
+            carry /= 10;
+        }
+        return res;
+    }
+    bool operator == (BigNum &b) const {
+        if(len!=b.len) return false;
+        for(int i=0;i<len;i++){
+            if(num[i]!=b.num[i]) return false;
+        }
+        return true;
+    }
+    bool operator<= (BigNum &b) const {
+        if(len<b.len) return true;
+        if(len>b.len) return false;
+        for(int i=len-1;i>=0;i--){
+            if(num[i]<b.num[i]) return true;
+            if(num[i]>b.num[i]) return false;
+        }
+        return true;
+    }
+    BigNum operator/(BigNum &b) const {
+        BigNum res;
+        BigNum temp;
+        for(int i=len-1;i>=0;i--){
+            temp = temp*10;
+            temp.num[0] = num[i];
+            while(b<=temp){
+                temp = temp - b;
+                res.num[i]++;
+                if(temp.len==1&&temp.num[0]==0) break;
+            }
+        }
+        while(res.len>=1&&res.num[res.len-1]==0) res.len--;
         return res;
     }
     friend ostream &operator<<(ostream &output, BigNum &b)
@@ -106,27 +152,22 @@ public:
         {
             output << b.num[i];
         }
-        output << endl;
-        return output;
+        return output; // 移除额外的换行符
     }
     friend istream &operator>>(istream &input, BigNum &b)
     {
         string s;
         input >> s;
+        int start = 0;
         if (s[0] == '-')
         {
             b.flag = false;
-            for (int i = 0, j = s.size() - 1; i < s.size() - 1 && j > 0; i++, j--)
-            {
-                b.num[i] = s[i] - '0';
-            }
+            start = 1;
         }
-        else
+        b.len = s.size() - start; // 修正长度计算
+        for (int i = 0, j = s.size() - 1; i < b.len && j >= start; i++, j--)
         {
-            for (int i = 0, j = s.size() - 1; i < s.size() - 1 && j >= 0; i++, j--)
-            {
-                b.num[i] = s[i] - '0';
-            }
+            b.num[i] = s[j] - '0'; // 修正写入的值
         }
         return input;
     }
@@ -138,7 +179,7 @@ int main()
     cin >> n1 >> n2;
     n3 = (n1 < n2) ? n2 - n1 : n1 - n2;
     n4 = n1 + n2;
-    BigNum n5 = n3*n4;
-    cout<<n5;
+    BigNum n5 = n4/n3;
+    cout << n5;
     return 0;
 }
