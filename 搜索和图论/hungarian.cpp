@@ -10,14 +10,16 @@ bool st[N];
 void add(int a, int b){
     e[idx] = b, ne[idx] = h[a] , h[a] ++ ;
 }
-
+//匈牙利算法判断每条边是否为二分图的最佳匹配
 int n,m,k;
 bool find(int x){
     for(int i = h[x];i!=-1;i=ne[i]){
         int j = e[i];
         if(!st[j]) {
             st[j] = true;
-            if(match[j]==0||find(match[j])){
+            if(match[j]==0||find(match[j]))
+            //要找的点没有匹配或者已匹配的点能够找到另外的匹配的点
+            {
                 match[j] = x;
                 return true;
             }

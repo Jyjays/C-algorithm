@@ -32,7 +32,7 @@ void add(int u, int v, int w)
     edges[u].push_back(pii(v, w));
     edges[v].push_back(pii(u, w));
 }
-// 并查集函数
+
 int find(int x)
 {
     if (p[x] != x)
@@ -54,6 +54,7 @@ void kruskal()
     }
 }
 // lca算法前置操作
+
 void dfs(int u, int father)
 {
     dep[u] = dep[father] + 1;
@@ -83,11 +84,10 @@ int lca(int u, int v)
     int res = INM;
     if (dep[u] < dep[v])
         swap(u, v);
-    // 先将两个节点对齐，同时更新res
+
     for (int i = 20; i >= 0; i--)
     {
         if (dep[fa[u][i]] >= dep[v])
-        //判断条件必须是  >=
         {
             res = min(res, cost[u][i]);
             u = fa[u][i];
@@ -95,6 +95,7 @@ int lca(int u, int v)
     }
     if (u == v)
         return res;
+
     for (int i = 20; i >= 0; i--)
     {
         if (fa[u][i] != fa[v][i])
@@ -103,8 +104,8 @@ int lca(int u, int v)
             u = fa[u][i], v = fa[v][i];
         }
     }
-    res = min(res, min(cost[u][0], cost[v][0]));
-    return res;
+
+    return min(res, min(cost[u][0], cost[v][0]));
 }
 int main()
 {
@@ -115,27 +116,30 @@ int main()
         cin >> u >> v >> w;
         edge[i] = {u, v, w};
     }
+
     auto cmp = [](Edge e1, Edge e2)
     {
         return e1 > e2;
     };
-    
 
     sort(edge, edge + m, cmp);
     for (int i = 1; i <= n; i++)
         p[i] = i;
+
     kruskal();
     dfs(1, 0);
+
     for (int i = 0; i < q; i++)
     {
         cin >> u >> v;
         if (find(u) != find(v))
         {
             cout << "-1" << endl;
-        }else{
+        }
+        else
+        {
             cout << lca(u, v) << endl;
         }
-        
     }
     return 0;
 }
