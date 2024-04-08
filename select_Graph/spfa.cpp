@@ -15,7 +15,7 @@ bool st[N];
 void add(int a, int b, int c)
 {
     e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
-    printf("h[%d]=%d\n",a,h[a]);
+   // printf("h[%d]=%d\n",a,h[a]);
 }
 
 int spfa()

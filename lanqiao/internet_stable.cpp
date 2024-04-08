@@ -77,7 +77,7 @@ void dfs(int u, int father)
         }
     }
 }
-
+//查找最近公共祖先，并计算到祖先节点的最小稳定性
 int lca(int u, int v)
 {
     int res = INM;
