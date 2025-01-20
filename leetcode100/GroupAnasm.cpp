@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <array>
+#include <algorithm>
 using namespace std;
 
 const int N = 10010;
@@ -70,22 +71,35 @@ public:
         // return res;
 
         //NOTE - Custom hash function
-        auto arrayHash = [fn = hash<int>{}] (const _array& arr) -> size_t {
-            return accumulate(arr.begin(), arr.end(), 0u, [&](size_t acc, int num) {
-                return (acc << 1) ^ fn(num);
-            });
-        };
-        unordered_map<_array,vector<string>,decltype(arrayHash)> mp(0,arrayHash);
+        // auto arrayHash = [fn = hash<int>{}] (const _array& arr) -> size_t {
+        //     return accumulate(arr.begin(), arr.end(), 0u, [&](size_t acc, int num) {
+        //         return (acc << 1) ^ fn(num);
+        //     });
+        // };
+        // unordered_map<_array,vector<string>,decltype(arrayHash)> mp(0,arrayHash);
+        // for (string &str:strs){
+        //     int len = str.length();
+        //     _array count{};
+        //     for (int i=0;i<len;i++){
+        //         count[str[i]-'a'] +=1;
+        //     }
+        //     mp[count].emplace_back(str);
+        // }
+        // vector<vector<string>> res;
+        // for (auto it = mp.begin();it!= mp.end();it++){
+        //     res.emplace_back(it->second);
+        // }
+        // return res;
+
+        //NOTE - sort version
+        unordered_map<string,vector<string>> mp;
         for (string &str:strs){
-            int len = str.length();
-            _array count{};
-            for (int i=0;i<len;i++){
-                count[str[i]-'a'] +=1;
-            }
-            mp[count].emplace_back(str);
+            auto tmp = str;
+            sort(tmp.begin(),tmp.end());
+            mp[tmp].emplace_back(str);
         }
         vector<vector<string>> res;
-        for (auto it = mp.begin();it!= mp.end();it++){
+        for(auto it = mp.begin();it!=mp.end();it++){
             res.emplace_back(it->second);
         }
         return res;
