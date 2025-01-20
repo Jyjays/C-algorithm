@@ -99,8 +99,8 @@ public:
             mp[tmp].emplace_back(str);
         }
         vector<vector<string>> res;
-        for(auto it = mp.begin();it!=mp.end();it++){
-            res.emplace_back(it->second);
+        for(auto &[_, v]:mp){
+            res.emplace_back(std::move(v));
         }
         return res;
     }
