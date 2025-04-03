@@ -62,6 +62,93 @@ class Solution {
     }
     return nullptr;
   }
+  ListNode *reverseList(ListNode *head) {
+    if (head == nullptr || head->next == nullptr) {
+      return head;
+    }
+    ListNode *cur_node = head;
+    ListNode *last_node = nullptr;
+    ListNode *next_node = cur_node->next;
+    while (next_node) {
+      last_node = cur_node;
+      cur_node = next_node;
+      next_node = next_node->next;
+      cur_node->next = last_node;
+    }
+    head->next = nullptr;
+    return cur_node;
+  }
+  bool isPalindrome(ListNode *head) {
+    int len = 0;
+    ListNode *cur = head;
+    while (cur) {
+      len++;
+      cur = cur->next;
+    }
+    bool isj = len % 2;
+    int half = len / 2;
+    cur = head;
+    stack<int> s;
+    while (half--) {
+      s.push(cur->val);
+      cur = cur->next;
+    }
+    if (isj) cur = cur->next;
+    while (cur) {
+      if (s.top() != cur->val) {
+        return false;
+      }
+      cur = cur->next;
+      s.pop();
+    }
+    return true;
+  }
+  bool hasCycle(ListNode *head) {
+    // int len = 0;
+    // ListNode* cur = head;
+    // while (cur) {
+    //   if(len > 10000) {
+    //     return false;
+    //   }
+    //   len++;
+    //   cur = cur->next;
+    // }
+    // return true;
+    if (head == nullptr || head->next == nullptr) {
+      return false;
+    }
+    ListNode *slow = head;
+    ListNode *fast = head->next;
+    while (slow != fast) {
+      if (fast == nullptr || fast->next == nullptr) {
+        return false;
+      }
+      slow = slow->next;
+      fast = fast->next->next;
+    }
+    return true;
+  }
+  ListNode *detectCycle(ListNode *head) {
+    ListNode *slow = head, *fast = head;
+    while (fast != nullptr) {
+        slow = slow->next;
+        if (fast->next == nullptr) {
+            return nullptr;
+        }
+        fast = fast->next->next;
+        // NOTE -  get the inter of the cycle
+        if (fast == slow) {
+            ListNode *ptr = head;
+            while (ptr != slow) {
+                ptr = ptr->next;
+                slow = slow->next;
+            }
+            return ptr;
+        }
+    }
+    return nullptr;
+
+}
 };
 
 int main() {}
