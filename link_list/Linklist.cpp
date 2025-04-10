@@ -1,12 +1,27 @@
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <stack>
+#include <unordered_map>
+#include <vector>
 using namespace std;
 
 struct ListNode {
   int val;
   ListNode *next;
   ListNode(int x) : val(x), next(NULL) {}
+};
+class Node {
+ public:
+  int val;
+  Node *next;
+  Node *random;
+
+  Node(int _val) {
+    val = _val;
+    next = NULL;
+    random = NULL;
+  }
 };
 
 class Solution {
@@ -265,6 +280,226 @@ class Solution {
 
     return head;
   }
+  void swapNode(ListNode *a, ListNode *b) {
+    ListNode *bn = b->next;
+    b->next = a;
+    a->next = bn;
+  }
+  ListNode *swapPairs(ListNode *head) {
+    if (head == nullptr || head->next == nullptr) return head;
+    ListNode *curA = head;
+
+    ListNode *curB = curA->next;
+
+    ListNode *new_head = curB;
+
+    ListNode *last_tail = nullptr;
+    while (curB) {
+      ListNode *tmpA = curA, *tmpB = curB;
+      if (curA->next->next && curB->next->next) {
+        curA = curA->next->next;
+        curB = curB->next->next;
+      } else {
+        curB = nullptr;
+      }
+      swapNode(tmpA, tmpB);
+      if (last_tail) {
+        last_tail->next = tmpB;
+      }
+      last_tail = tmpA;
+    }
+    return new_head;
+  }
+  pair<ListNode *, ListNode *> reverseChildLink(ListNode *head,
+                                                ListNode *tail) {
+    ListNode *last_node = nullptr;
+    ListNode *cur = head;
+    ListNode *next_node = cur->next;
+    ListNode *end = tail->next;
+    while (next_node != end) {
+      last_node = cur;
+      cur = next_node;
+      next_node = next_node->next;
+      cur->next = last_node;
+    }
+    return {tail, head};
+  }
+  ListNode *reverseKGroup(ListNode *head, int k) {
+    if (head == nullptr || head->next == nullptr) {
+      return head;
+    }
+    ListNode *hair = new ListNode(0);
+    hair->next = head;
+    ListNode *cur = hair;
+    ListNode *last_tail = hair;
+    while (last_tail->next) {
+      for (int i = 0; i < k; i++) {
+        cur = cur->next;
+        if (cur == nullptr) {
+          return hair->next;
+        }
+      }
+      ListNode *next_node = cur->next;
+      auto [new_head, new_tail] = reverseChildLink(last_tail->next, cur);
+      last_tail->next = new_head;
+      last_tail = new_tail;
+      last_tail->next = next_node;
+      cur = last_tail;
+    }
+    return hair->next;
+  }
+  unordered_map<Node *, Node *> old2new;
+  Node *copyRandomList(Node *head) {
+    if (head == nullptr) {
+      return head;
+    }
+    if (old2new.find(head) == old2new.end()) {
+      Node *new_head = new Node(head->val);
+      old2new[head] = new_head;
+      new_head->next = copyRandomList(head->next);
+      new_head->random = copyRandomList(head->random);
+    }
+    return old2new[head];
+  }
+  ListNode *sortList(ListNode *head) {
+    vector<int> v;
+    ListNode *cur = head;
+    while (cur) {
+      v.push_back(cur->val);
+      cur = cur->next;
+    }
+    sort(v.begin(), v.end(), [](int a, int b) { return a < b; });
+    ListNode *new_head = new ListNode(0);
+    cur = new_head;
+    for (auto i : v) {
+      cur->next = new ListNode(i);
+      cur = cur->next;
+    }
+    return new_head->next;
+  }
+  ListNode *mergeKLists(vector<ListNode *> &lists) {
+    int len = lists.size();
+    vector<int> array;
+    for (auto cur : lists) {
+      while (cur) {
+        array.push_back(cur->val);
+        cur = cur->next;
+      }
+    }
+    sort(array.begin(), array.end(), greater<int>());
+    ListNode *new_head = new ListNode(0);
+    ListNode *cur = new_head;
+    for (auto i : array) {
+      cur->next = new ListNode(i);
+      cur = cur->next;
+    }
+    return new_head->next;
+  }
+};
+struct LRUNode {
+  int key;
+  int val;
+  LRUNode *next;
+  LRUNode *prev;
+  LRUNode(int k, int x) : key(k), val(x) {};
+};
+class LRUCache {
+ public:
+ // NOTE - head和tail都指向了实际的节点，编写代码会有很多边界条件，很麻烦
+ // 可以使用虚拟节点，head->next指向第一个节点，tail->prev指向最后一个，不用考虑nullptr
+  LRUCache(int capacity) {
+    this->capacity = capacity;
+    head = nullptr;
+    tail = nullptr;
+  }
+
+  int get(int key) {
+    auto iter = m.find(key);
+    if (iter == m.end()) {
+      return -1;
+    }
+    LRUNode *node = iter->second;
+    if (head != node && tail != node) {
+      node->prev->next = node->next;
+      node->next->prev = node->prev;
+      node->next = head;
+      head->prev = node;
+    } else if (node == tail && head != tail) {
+      tail = tail->prev;
+      tail->next = nullptr;
+      node->next = head;
+      head->prev = node;
+    }
+    head = node;
+    return node->val;
+  }
+
+  void put(int key, int value) {
+    // put to the head and evict the tail.
+    auto iter = m.find(key);
+    if (iter == m.end()) {
+      // not found
+
+      LRUNode *node = new LRUNode(key, value);
+      m[key] = node;
+      if (head == nullptr) {
+        head = node;
+        tail = head;
+        return;
+      }
+      node->next = head;
+      head->prev = node;
+      head = node;
+      if (m.size() > capacity) {
+        int del = tail->key;
+        m.erase(del);
+        tail = tail->prev;
+        delete tail->next;
+        tail->next = nullptr;
+      }
+    } else {
+      LRUNode *node = iter->second;
+      if (head != node && tail != node) {
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        node->next = head;
+        head->prev = node;
+      } else if (node == tail && head != tail) {
+        tail = tail->prev;
+        tail->next = nullptr;
+        node->next = head;
+        head->prev = node;
+      }
+      head = node;
+      node -> val = value;
+    }
+  }
+
+ private:
+  LRUNode *head;
+  LRUNode *tail;
+  unordered_map<int, LRUNode *> m;
+  int capacity;
 };
 
-int main() {}
+int main() {
+  LRUCache lru(2);
+  string op;
+  while (true) {
+    cin >> op;
+    if (op == "g") {
+      int k;
+      cin >> k;
+      cout << lru.get(k) << endl;
+    } else if (op == "p") {
+      int k, v;
+      cin >> k >> v;
+      lru.put(k, v);
+
+    } else {
+      // Handle unknown command
+    }
+  }
+
+  return 0;
+}
