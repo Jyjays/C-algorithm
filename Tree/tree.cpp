@@ -309,6 +309,22 @@ class Solution {
     }
     return nullptr;
   }
+  int MMax = INT_MIN ;
+  int rootPathSum(TreeNode* root) {
+    if (root == nullptr) return 0;
+    int leftGain = rootPathSum(root->left);
+    int rightGain = rootPathSum(root->right);
+    // 当更新结果时要添加左右两边最大的贡献值
+    int new_res = root->val + max(leftGain,0) + max(rightGain, 0);
+    MMax = max(MMax,new_res);
+    // 但是返回值只能选择最大的那个贡献值返回
+    return root->val + max(0,max(leftGain, rightGain));
+  }
+  int maxPathSum(TreeNode* root) {
+      if (root== nullptr) return 0;
+      rootPathSum(root);
+      return MMax;
+  }
 };
 
 int main() {
