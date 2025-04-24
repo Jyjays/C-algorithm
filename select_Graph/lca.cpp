@@ -34,7 +34,7 @@ void dfs(int u, int father) {
 }
 
 int lca(int u, int v) {
-  if (dep[u] < dep[v]) swap(u, v);
+  if (dep[u] < dep[v]) std::swap(u, v);
   for (int i = 19; i >= 0; i--) {
     if (dep[fa[u][i]] > dep[v]) u = fa[u][i]; // 将u上移到与v同一深度
   }

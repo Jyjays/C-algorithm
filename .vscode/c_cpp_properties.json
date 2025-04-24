@@ -10,9 +10,10 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:\\Tools\\mingw\\MinGW\\bin\\gcc.exe",
+            "compilerPath": "D:/Tools/mingw/MinGW/bin/g++.exe",
             "intelliSenseMode": "windows-gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4
