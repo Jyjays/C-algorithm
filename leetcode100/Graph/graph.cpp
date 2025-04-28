@@ -123,7 +123,7 @@ int orangesRotting(vector<vector<int>>& grid) {
 class Trie {
  private:
   struct TrieNode {
-    bool isEnd_; // 判断是否是单词的结尾
+    bool isEnd_;  // 判断是否是单词的结尾
     unordered_map<char, TrieNode*> children;
     TrieNode() : isEnd_(false) {}
     TrieNode(bool end) : isEnd_(end) {}
@@ -173,22 +173,22 @@ class Trie {
 };
 
 vector<vector<int>> permute_res;
-unordered_map<int,bool> permute_map;
+unordered_map<int, bool> permute_map;
 vector<int> permute_nums;
 int permute_size = 0;
 void permute_dfs(vector<int>& res, int level) {
   if (level == permute_size) {
     permute_res.push_back(res);
-    //int last = res.back();
-    //res.pop_back();
-    // permute_map[last] = false;
+    // int last = res.back();
+    // res.pop_back();
+    //  permute_map[last] = false;
     return;
   }
-  for (int i: permute_nums) {
-    if (!permute_map[i]){
+  for (int i : permute_nums) {
+    if (!permute_map[i]) {
       permute_map[i] = true;
       res.push_back(i);
-      permute_dfs(res,level + 1);
+      permute_dfs(res, level + 1);
       permute_map[i] = false;
       res.pop_back();
     }
@@ -206,9 +206,103 @@ vector<vector<int>> permute(vector<int>& nums) {
   permute_dfs(res, 0);
   return permute_res;
 }
+vector<vector<int>> subsets_res;
+vector<int> sub_nums;
+int sub_size = 0;
+void subsetsbfs(vector<int>& res, int cur) {
+  if (cur == sub_size) {
+    subsets_res.push_back(res);
+    return;
+  }
+  res.push_back(sub_nums[cur]);
+  subsetsbfs(res, cur + 1);
+  res.pop_back();
+  subsetsbfs(res, cur + 1);
+}
+vector<vector<int>> subsets(vector<int>& nums) {
+  sub_nums = nums;
+  sub_size = nums.size();
+  vector<int> res;
+  subsetsbfs(res, 0);
+  return subsets_res;
+}
+
+unordered_map<int, vector<char>> phone_map;
+vector<string> phone_ans;
+string phone_res;
+string phone_digits;
+void phone_dfs(int cur) {
+  if (cur == phone_digits.size()) {
+    phone_ans.push_back(phone_res);
+    return;
+  }
+  const vector<char>& vec =
+      phone_map[phone_digits[cur] - '0'];  // 注意：用 digits[cur] 映射到数字
+  for (char c : vec) {
+    phone_res.push_back(c);  // 添加当前字符
+    phone_dfs(cur + 1);      // 递归下一位
+    phone_res.pop_back();    // 回溯撤销添加
+  }
+}
+
+vector<string> letterCombinations(string digits) {
+  if (digits.size() == 0) {
+    return vector<string>();
+  }
+  char a = 'a';
+
+  for (int i = 2; i <= 9; i++) {
+    vector<char> cs = {a, static_cast<char>(a + 1), static_cast<char>(a + 2)};
+    a += 3;
+    if (i == 7 || i == 9) {
+      cs.push_back(a);
+      a++;
+    }
+    phone_map[i] = cs;
+  }
+  phone_digits = digits;
+  phone_dfs(0);
+  return phone_ans;
+}
+
+vector<int> conbination_candidates;
+vector<vector<int>> conbination_ans;
+vector<int> conbination_res;
+int conbination_target;
+int c_size ;
+
+void conbination_dfs(int start, int sum) {
+    if (sum == conbination_target) {
+      conbination_ans.push_back(conbination_res);
+        return;
+    }
+    
+    if (sum > conbination_target) {
+        return;
+    }
+    
+    for (int i = start; i < conbination_candidates.size(); i++) {
+      conbination_res.push_back(conbination_candidates[i]);
+        // 因为可以重复选择同一个数字，所以还是从 i 开始
+        conbination_dfs(i, sum + conbination_candidates[i]);
+        conbination_res.pop_back();
+    }
+}
+
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+  conbination_target = target;
+  conbination_candidates = candidates;
+  c_size = candidates.size();
+  conbination_dfs(0, 0);
+  return conbination_ans;
+}
 
 int main() {
-  vector<vector<int>> grid = {{2, 1, 1}, {1, 1, 0}, {0, 1, 1}};
+  // vector<vector<int>> grid = {{2, 1, 1}, {1, 1, 0}, {0, 1, 1}};
+  // string dighits = "223";
+  // auto res = letterCombinations(dighits);
 
+  vector<int> candidates = {2,3,5,7};
+  combinationSum(candidates,7);
   return 0;
 }
