@@ -297,6 +297,38 @@ vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
   return conbination_ans;
 }
 
+
+vector<string> parent_res;
+string cur_res;
+int par_n;
+void Parenthesis(int left, int right) {
+  if (right > left || left > par_n) {
+    return;
+  }
+  if (right == par_n) {
+    parent_res.push_back(cur_res);
+    return;
+  }
+
+  if (left > right) {
+    cur_res.push_back('(');
+    Parenthesis(left + 1, right);
+    cur_res.pop_back();
+    
+    cur_res.push_back(')');
+    Parenthesis(left, right + 1);
+    cur_res.pop_back();
+  } else {
+    cur_res.push_back('(');
+    Parenthesis(left + 1, right);
+    cur_res.pop_back();
+  }
+}
+vector<string> generateParenthesis(int n) {
+  par_n = n;
+  Parenthesis(0,0);
+  return parent_res;
+}
 int main() {
   // vector<vector<int>> grid = {{2, 1, 1}, {1, 1, 0}, {0, 1, 1}};
   // string dighits = "223";
